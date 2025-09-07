@@ -2,16 +2,24 @@ function isVideoPage(url) {
   return url.includes("watch?v=");
 }
 
+function isHomePage(url) {
+  // Check if it's the YouTube homepage (youtube.com or youtube.com/)
+  return (
+    url === "https://www.youtube.com/" || url === "https://www.youtube.com"
+  );
+}
+
 function getVideoId(url) {
   const match = url.match(/[?&]v=([^&]+)/);
   return match ? match[1] : null;
 }
 
 function handleNavigation(url) {
-  if (!isVideoPage(url)) return;
+  // Check if it's a video page or homepage that should be blocked
+  const isVideo = isVideoPage(url);
+  const isHome = isHomePage(url);
 
-  const videoId = getVideoId(url);
-  if (!videoId) return;
+  if (!isVideo && !isHome) return;
 
   if (window._lastCheckedUrl === url) return;
   window._lastCheckedUrl = url;
@@ -28,15 +36,21 @@ function handleNavigation(url) {
       const whitelist = data.whitelist || {};
       const now = Date.now();
 
-      // ✅ Check if videoId is in whitelist and not expired
-      if (whitelist[videoId]) {
-        if (now < whitelist[videoId]) {
-          // Still within 20 min grace period — skip block
-          return;
-        } else {
-          // Expired — remove from whitelist
-          delete whitelist[videoId];
-          chrome.storage.local.set({ whitelist });
+      // For video pages, check whitelist
+      if (isVideo) {
+        const videoId = getVideoId(url);
+        if (!videoId) return;
+
+        // ✅ Check if videoId is in whitelist and not expired
+        if (whitelist[videoId]) {
+          if (now < whitelist[videoId]) {
+            // Still within 20 min grace period — skip block
+            return;
+          } else {
+            // Expired — remove from whitelist
+            delete whitelist[videoId];
+            chrome.storage.local.set({ whitelist });
+          }
         }
       }
 
@@ -44,7 +58,9 @@ function handleNavigation(url) {
       const blockDuration = CONFIG.BLOCK_DURATION_MINUTES * 60 * 1000;
       const newEndTime = now + blockDuration;
 
-      blockTimers[url] = { endTime: newEndTime };
+      // Use a consistent key for homepage blocking
+      const blockKey = isHome ? "youtube_homepage" : url;
+      blockTimers[blockKey] = { endTime: newEndTime };
 
       chrome.storage.local.set({ blockTimers }, () => {
         const blockUrl =

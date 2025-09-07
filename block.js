@@ -1,37 +1,42 @@
 function getVideoId(url) {
-    const match = url.match(/[?&]v=([^&]+)/);
-    return match ? match[1] : null;
+  const match = url.match(/[?&]v=([^&]+)/);
+  return match ? match[1] : null;
 }
 
-
 function updateTimer(endTime, redirectUrl) {
-    const now = Date.now();
-    const diff = endTime - now;
+  const now = Date.now();
+  const diff = endTime - now;
 
-    if (diff <= 0) {
-        const videoId = getVideoId(redirectUrl);
-        const whitelistExpireTime = now + CONFIG.WHITELIST_DURATION_MINUTES * 60 * 1000;
+  if (diff <= 0) {
+    const videoId = getVideoId(redirectUrl);
+    const whitelistExpireTime =
+      now + CONFIG.WHITELIST_DURATION_MINUTES * 60 * 1000;
 
-        if (videoId) {
-            chrome.storage.local.get(["whitelist"], (data) => {
-                const whitelist = data.whitelist || {};
-                whitelist[videoId] = whitelistExpireTime;
-                chrome.storage.local.set({ whitelist }, () => {
-                    window.location.href = redirectUrl || "https://www.youtube.com";
-                });
-            });
-        } else {
-            window.location.href = redirectUrl || "https://www.youtube.com";
-        }
-        return;
+    // Only add to whitelist if it's a video page (not homepage)
+    if (videoId) {
+      chrome.storage.local.get(["whitelist"], (data) => {
+        const whitelist = data.whitelist || {};
+        whitelist[videoId] = whitelistExpireTime;
+        chrome.storage.local.set({ whitelist }, () => {
+          window.location.href = redirectUrl || "https://www.youtube.com";
+        });
+      });
+    } else {
+      // For homepage or other non-video pages, just redirect without whitelisting
+      window.location.href = redirectUrl || "https://www.youtube.com";
     }
+    return;
+  }
 
-    const minutes = Math.floor(diff / 60000);
-    const seconds = Math.floor((diff % 60000) / 1000);
-    document.getElementById("timer").textContent =
-        `Come back in ${minutes}:${seconds.toString().padStart(2, "0")}`;
+  const minutes = Math.floor(diff / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+  document.getElementById(
+    "timer"
+  ).textContent = `Come back in ${minutes}:${seconds
+    .toString()
+    .padStart(2, "0")}`;
 
-    setTimeout(() => updateTimer(endTime, redirectUrl), 1000);
+  setTimeout(() => updateTimer(endTime, redirectUrl), 1000);
 }
 
 const urlParams = new URLSearchParams(window.location.search);
