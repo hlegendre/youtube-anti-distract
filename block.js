@@ -3,6 +3,40 @@ function getVideoId(url) {
   return match ? match[1] : null;
 }
 
+function getRandomQuote() {
+  if (!CONFIG.INSPIRING_QUOTES || CONFIG.INSPIRING_QUOTES.length === 0) {
+    return {
+      text: "Concentrez-vous sur ce qui compte vraiment.",
+      author: "Citation par défaut",
+    };
+  }
+
+  const randomIndex = Math.floor(
+    Math.random() * CONFIG.INSPIRING_QUOTES.length
+  );
+  const fullQuote = CONFIG.INSPIRING_QUOTES[randomIndex];
+
+  // Split quote and author (format: "Quote text - Author")
+  const lastDashIndex = fullQuote.lastIndexOf(" - ");
+  if (lastDashIndex !== -1) {
+    return {
+      text: fullQuote.substring(0, lastDashIndex).trim(),
+      author: fullQuote.substring(lastDashIndex + 3).trim(),
+    };
+  } else {
+    return {
+      text: fullQuote,
+      author: "Citation inspirante",
+    };
+  }
+}
+
+function displayQuote() {
+  const quote = getRandomQuote();
+  document.getElementById("quote-text").textContent = quote.text;
+  document.getElementById("quote-author").textContent = quote.author;
+}
+
 function updateTimer(endTime, redirectUrl) {
   const now = Date.now();
   const diff = endTime - now;
@@ -42,5 +76,8 @@ function updateTimer(endTime, redirectUrl) {
 const urlParams = new URLSearchParams(window.location.search);
 const until = parseInt(urlParams.get("until"), 10);
 const redirect = urlParams.get("redirect");
+
+// Display a random quote when the page loads
+displayQuote();
 
 updateTimer(until, decodeURIComponent(redirect));

@@ -1,22 +1,97 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
     <title>Blocked</title>
     <style>
       body {
-        font-family: sans-serif;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         text-align: center;
-        margin-top: 20%;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
+
+      .container {
+        max-width: 600px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .subtitle {
+        font-size: 1.2em;
+        margin-bottom: 30px;
+        opacity: 0.9;
+      }
+
       #timer {
-        font-size: 2em;
+        font-size: 2.5em;
+        font-weight: bold;
+        margin: 30px 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        color: #ffd700;
+      }
+
+      #quote {
+        font-size: 1.3em;
+        font-style: italic;
+        line-height: 1.6;
+        margin: 30px 0;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        border-left: 4px solid #ffd700;
+        text-align: left;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .quote-author {
+        font-size: 0.9em;
+        margin-top: 10px;
+        text-align: right;
+        opacity: 0.8;
+        font-style: normal;
+      }
+
+      .motivation-text {
+        font-size: 1.1em;
+        margin-top: 20px;
+        opacity: 0.9;
       }
     </style>
   </head>
   <body>
-    <h1>YouTube is blocked</h1>
-    <p>This page is temporarily blocked to help you stay focused.</p>
-    <p id="timer">Loading...</p>
+    <div class="container">
+      <h1>YouTube est bloqué</h1>
+      <p class="subtitle">
+        Cette page est temporairement bloquée pour vous aider à rester
+        concentré.
+      </p>
+      <p id="timer">Chargement...</p>
+      <div id="quote">
+        <div id="quote-text">Chargement de votre citation inspirante...</div>
+        <div id="quote-author" class="quote-author"></div>
+      </div>
+      <p class="motivation-text">
+        💪 Utilisez ce temps pour vous concentrer sur ce qui compte vraiment !
+      </p>
+    </div>
     <script src="config.js"></script>
     <script src="block.js"></script>
   </body>
