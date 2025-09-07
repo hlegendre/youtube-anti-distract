@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Schedule Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .test-case {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+      }
+      .result {
+        font-weight: bold;
+      }
+      .allowed {
+        color: green;
+      }
+      .blocked {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>YouTube Anti-Distract Schedule Test</h1>
+    <p>
+      This page tests the schedule functionality. Open the browser console to
+      see detailed logs.
+    </p>
+
+    <div id="current-status"></div>
+
+    <h2>Test Cases</h2>
+    <div id="test-results"></div>
+
+    <script src="config.js"></script>
+    <script>
+      function updateCurrentStatus() {
+        const now = new Date();
+        const isAllowed = isWithinAllowedSchedule();
+        const statusDiv = document.getElementById("current-status");
+
+        statusDiv.innerHTML = `
+                <div class="test-case">
+                    <h3>Current Status</h3>
+                    <p><strong>Current Time:</strong> ${now.toLocaleString()}</p>
+                    <p><strong>Day of Week:</strong> ${
+                      [
+                        "Sunday",
+                        "Monday",
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday",
+                      ][now.getDay()]
+                    }</p>
+                    <p><strong>Schedule Status:</strong> <span class="${
+                      isAllowed ? "allowed" : "blocked"
+                    }">${
+          isAllowed
+            ? "ALLOWED (No Blocking)"
+            : "BLOCKED (Videos will be blocked)"
+        }</span></p>
+                </div>
+            `;
+      }
+
+      function runTestCases() {
+        const testCases = [
+          { name: "11:00 AM (Before lunch)", hour: 11, minute: 0, day: 1 },
+          { name: "12:30 PM (During lunch)", hour: 12, minute: 30, day: 1 },
+          { name: "1:30 PM (During lunch)", hour: 13, minute: 30, day: 1 },
+          { name: "3:00 PM (After lunch)", hour: 15, minute: 0, day: 1 },
+          { name: "5:30 PM (Before evening)", hour: 17, minute: 30, day: 1 },
+          { name: "6:30 PM (During evening)", hour: 18, minute: 30, day: 1 },
+          { name: "7:30 PM (During evening)", hour: 19, minute: 30, day: 1 },
+          { name: "9:00 PM (After evening)", hour: 21, minute: 0, day: 1 },
+        ];
+
+        const resultsDiv = document.getElementById("test-results");
+        let html = "";
+
+        testCases.forEach((testCase) => {
+          // Temporarily override the Date constructor for testing
+          const originalDate = Date;
+          Date = function (...args) {
+            if (args.length === 0) {
+              return new originalDate();
+            }
+            return new originalDate(...args);
+          };
+          Date.now = originalDate.now;
+          Date.parse = originalDate.parse;
+          Date.UTC = originalDate.UTC;
+
+          // Mock the current time
+          const mockDate = new originalDate();
+          mockDate.getHours = () => testCase.hour;
+          mockDate.getMinutes = () => testCase.minute;
+          mockDate.getDay = () => testCase.day;
+
+          // Override Date constructor to return our mock
+          const originalDateConstructor = Date;
+          Date = function (...args) {
+            if (args.length === 0) {
+              return mockDate;
+            }
+            return new originalDateConstructor(...args);
+          };
+          Date.now = originalDate.now;
+          Date.parse = originalDate.parse;
+          Date.UTC = originalDate.UTC;
+
+          const isAllowed = isWithinAllowedSchedule();
+
+          html += `
+                    <div class="test-case">
+                        <strong>${testCase.name}</strong>: 
+                        <span class="${isAllowed ? "allowed" : "blocked"}">${
+            isAllowed ? "ALLOWED" : "BLOCKED"
+          }</span>
+                    </div>
+                `;
+
+          // Restore original Date
+          Date = originalDate;
+        });
+
+        resultsDiv.innerHTML = html;
+      }
+
+      // Update status every second
+      updateCurrentStatus();
+      setInterval(updateCurrentStatus, 1000);
+
+      // Run test cases
+      runTestCases();
+
+      // Log current configuration
+      console.log("Current Configuration:", CONFIG);
+      console.log("Schedule enabled:", CONFIG.SCHEDULE_ENABLED);
+      console.log("Allowed time ranges:", CONFIG.ALLOWED_TIME_RANGES);
+      CONFIG.ALLOWED_TIME_RANGES.forEach((range, index) => {
+        console.log(`Range ${index + 1}: ${range.start} - ${range.end}`);
+      });
+    </script>
+  </body>
+</html>
