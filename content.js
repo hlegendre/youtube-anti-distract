@@ -36,15 +36,18 @@ function handleNavigation(url) {
       const whitelist = data.whitelist || {};
       const now = Date.now();
 
-      // For video pages, check whitelist
+      // Check if this URL is whitelisted (either as video ID or full URL)
+      if (whitelist[url] && now < whitelist[url]) {
+        console.log("URL whitelisted - skipping block");
+        return;
+      }
+
+      // For video pages, also check video ID in whitelist
       if (isVideo) {
         const videoId = getVideoId(url);
-        if (!videoId) return;
-
-        // ✅ Check if videoId is in whitelist and not expired
-        if (whitelist[videoId]) {
+        if (videoId && whitelist[videoId]) {
           if (now < whitelist[videoId]) {
-            // Still within 20 min grace period — skip block
+            // Still within grace period — skip block
             return;
           } else {
             // Expired — remove from whitelist

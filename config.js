@@ -4,6 +4,10 @@ const CONFIG = {
   BLOCK_DURATION_MINUTES: 5, // ⏳ How long each video is blocked
   WHITELIST_DURATION_MINUTES: 20, // ⏱️ How long a video is unblocked after timer ends
 
+  // 🚨 Bypass settings
+  BYPASS_MIN_WORDS: 20, // Minimum words required for bypass justification
+  BYPASS_REFLECTION_TIME_SECONDS: 15, // Time in seconds for reflection step
+
   // 📅 Schedule settings - blocking is disabled during these time ranges
   SCHEDULE_ENABLED: true, // Enable/disable schedule feature
 

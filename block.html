@@ -74,6 +74,198 @@
         margin-top: 20px;
         opacity: 0.9;
       }
+
+      .bypass-button {
+        background: rgba(255, 107, 107, 0.9);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.1em;
+        border-radius: 25px;
+        cursor: pointer;
+        margin-top: 30px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        font-weight: bold;
+      }
+
+      .bypass-button:hover {
+        background: rgba(255, 107, 107, 1);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+      }
+
+      .bypass-button:disabled {
+        background: rgba(150, 150, 150, 0.5);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+      }
+
+      .modal-content {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: 5% auto;
+        padding: 40px;
+        border-radius: 20px;
+        width: 80%;
+        max-width: 600px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        text-align: center;
+      }
+
+      .modal h2 {
+        margin-bottom: 20px;
+        color: #ffd700;
+      }
+
+      .modal p {
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .reflection-input {
+        width: 100%;
+        min-height: 120px;
+        padding: 15px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 1em;
+        resize: vertical;
+        margin-bottom: 20px;
+      }
+
+      .reflection-input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .reflection-input:focus {
+        outline: none;
+        border-color: #ffd700;
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+      }
+
+      .word-count {
+        font-size: 0.9em;
+        opacity: 0.8;
+        margin-bottom: 20px;
+      }
+
+      .math-problem {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        font-size: 1.2em;
+      }
+
+      .math-input {
+        width: 100px;
+        padding: 10px;
+        margin: 0 10px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 1.1em;
+        text-align: center;
+      }
+
+      .math-input:focus {
+        outline: none;
+        border-color: #ffd700;
+      }
+
+      .modal-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+      }
+
+      .modal-button {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      .modal-button.primary {
+        background: #ff6b6b;
+        color: white;
+      }
+
+      .modal-button.secondary {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .modal-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .modal-button:disabled {
+        background: rgba(150, 150, 150, 0.5);
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .reflection-timer {
+        font-size: 1.5em;
+        color: #ffd700;
+        margin: 20px 0;
+        font-weight: bold;
+      }
+
+      .step-indicator {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      .step {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 10px;
+        font-weight: bold;
+      }
+
+      .step.active {
+        background: #ffd700;
+        color: #333;
+      }
+
+      .step.completed {
+        background: #4caf50;
+        color: white;
+      }
     </style>
   </head>
   <body>
@@ -91,6 +283,106 @@
       <p class="motivation-text">
         💪 Utilisez ce temps pour vous concentrer sur ce qui compte vraiment !
       </p>
+      <button id="bypassButton" class="bypass-button">
+        🚨 Contourner le blocage
+      </button>
+    </div>
+
+    <!-- Modal de bypass -->
+    <div id="bypassModal" class="modal">
+      <div class="modal-content">
+        <div class="step-indicator">
+          <div class="step" id="step1">1</div>
+          <div class="step" id="step2">2</div>
+          <div class="step" id="step3">3</div>
+          <div class="step" id="step4">4</div>
+          <div class="step" id="step5">5</div>
+        </div>
+
+        <!-- Étape 1: Question de réflexion -->
+        <div id="step1-content" class="step-content">
+          <h2>🤔 Réflexion obligatoire</h2>
+          <p>Avant de contourner ce blocage, réfléchissez vraiment :</p>
+          <p>
+            <strong
+              >Pourquoi cette vidéo est-elle vraiment nécessaire maintenant
+              ?</strong
+            >
+          </p>
+          <p>
+            Écrivez une justification détaillée (minimum
+            <span id="minWords">50</span> mots) :
+          </p>
+          <textarea
+            id="reflectionText"
+            class="reflection-input"
+            placeholder="Expliquez en détail pourquoi vous devez absolument regarder cette vidéo maintenant. Soyez honnête avec vous-même..."
+          ></textarea>
+          <div class="word-count" id="wordCount">
+            0 mots (minimum <span id="minWordsCount">50</span> requis)
+          </div>
+        </div>
+
+        <!-- Étape 2: Temps de réflexion -->
+        <div id="step2-content" class="step-content" style="display: none">
+          <h2>⏰ Temps de réflexion</h2>
+          <p>Prenez le temps de réfléchir à votre décision...</p>
+          <div class="reflection-timer" id="reflectionTimer">30</div>
+          <p>secondes de réflexion obligatoire</p>
+        </div>
+
+        <!-- Étape 3: Calcul mental -->
+        <div id="step3-content" class="step-content" style="display: none">
+          <h2>🧮 Calcul mental</h2>
+          <p>Résolvez ce calcul pour continuer :</p>
+          <div class="math-problem">
+            <span id="mathProblem">15 × 7 + 23 = </span>
+            <input
+              type="number"
+              id="mathAnswer"
+              class="math-input"
+              placeholder="?"
+            />
+          </div>
+        </div>
+
+        <!-- Étape 4: Confirmation finale -->
+        <div id="step4-content" class="step-content" style="display: none">
+          <h2>⚠️ Dernière confirmation</h2>
+          <p>
+            Vous êtes sur le point de contourner votre propre système de
+            productivité.
+          </p>
+          <p><strong>Êtes-vous vraiment sûr que c'est nécessaire ?</strong></p>
+          <p>Tapez "JE SUIS SÛR" pour confirmer :</p>
+          <input
+            type="text"
+            id="finalConfirmation"
+            class="math-input"
+            placeholder="JE SUIS SÛR"
+            style="width: 200px"
+          />
+        </div>
+
+        <!-- Étape 5: Bypass réussi -->
+        <div id="step5-content" class="step-content" style="display: none">
+          <h2>✅ Bypass activé</h2>
+          <p>
+            Vous avez contourné le blocage. Espérons que c'était vraiment
+            nécessaire...
+          </p>
+          <p>Vous serez redirigé dans quelques secondes.</p>
+        </div>
+
+        <div class="modal-buttons">
+          <button id="cancelBypass" class="modal-button secondary">
+            Annuler
+          </button>
+          <button id="nextStep" class="modal-button primary" disabled>
+            Continuer
+          </button>
+        </div>
+      </div>
     </div>
     <script src="config.js"></script>
     <script src="block.js"></script>
