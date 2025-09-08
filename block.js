@@ -98,6 +98,17 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("minWords").textContent = minWords;
   document.getElementById("minWordsCount").textContent = minWords;
   document.getElementById("reflectionTimer").textContent = reflectionTime;
+
+  // Set confirmation phrase text and placeholder dynamically
+  const confirmationPhrase = CONFIG.BYPASS_CONFIRMATION_PHRASE || "JE SUIS SÛR";
+  const phraseTextEl = document.getElementById("confirmationPhraseText");
+  if (phraseTextEl) {
+    phraseTextEl.textContent = confirmationPhrase;
+  }
+  const finalConfirmationInput = document.getElementById("finalConfirmation");
+  if (finalConfirmationInput) {
+    finalConfirmationInput.setAttribute("placeholder", confirmationPhrase);
+  }
 });
 
 /**
@@ -331,7 +342,8 @@ function validateCurrentStep() {
 
     case 4:
       const confirmation = document.getElementById("finalConfirmation").value;
-      return confirmation === "JE SUIS SÛR";
+      const requiredPhrase = CONFIG.BYPASS_CONFIRMATION_PHRASE || "JE SUIS SÛR";
+      return confirmation === requiredPhrase;
 
     default:
       return true;

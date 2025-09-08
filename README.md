@@ -19,7 +19,7 @@ your own terms.
 - 🔁 **Multi-tab & history-aware**
   - Works across tabs and SPA navigation (pushState/replaceState/url changes).
 - 🧠 **Bypass flow (5 steps, configurable)**
-  - You can bypass the block with a conscious intent and process: writing a reflection text with minimum word count, mandatory reflection timer, mental math challenge, final confirmation (type "JE SUIS SÛR").
+  - You can bypass the block with a conscious intent and process: writing a reflection text with minimum word count, mandatory reflection timer, mental math challenge, final confirmation by typing a specific phrase.
 - 📅 **Scheduling windows (allowlist time ranges)**
   - Define time ranges when blocking is disabled (e.g., lunch, evening). Handy for guilt-free leisure windows.
 - ✨ **Inspiring quotes**
@@ -40,6 +40,7 @@ const CONFIG = {
   // Bypass flow
   BYPASS_MIN_WORDS: 20, // Minimum words required for reflection
   BYPASS_REFLECTION_TIME_SECONDS: 15, // Mandatory wait before continuing
+  BYPASS_CONFIRMATION_PHRASE: "JE SUIS SÛR", // Phrase to type for final confirmation
 
   // Schedule: blocking is disabled during these ranges (HH:MM)
   SCHEDULE_ENABLED: true,

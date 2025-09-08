@@ -7,6 +7,7 @@ const CONFIG = {
   // 🚨 Bypass settings
   BYPASS_MIN_WORDS: 20, // Minimum words required for bypass justification
   BYPASS_REFLECTION_TIME_SECONDS: 15, // Time in seconds for reflection step
+  BYPASS_CONFIRMATION_PHRASE: "JE SUIS SÛR", // Phrase to type to confirm bypass
 
   // 📅 Schedule settings - blocking is disabled during these time ranges
   SCHEDULE_ENABLED: true, // Enable/disable schedule feature
