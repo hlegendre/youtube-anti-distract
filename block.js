@@ -150,6 +150,43 @@ function initBypassSystem() {
     updateNextButton();
   });
 
+  // Add keyboard event listeners for Enter key
+  reflectionText.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && e.ctrlKey) {
+      e.preventDefault();
+      if (validateCurrentStep()) {
+        currentStep++;
+        if (currentStep <= 5) {
+          showStep(currentStep);
+        }
+      }
+    }
+  });
+
+  mathAnswerInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (validateCurrentStep()) {
+        currentStep++;
+        if (currentStep <= 5) {
+          showStep(currentStep);
+        }
+      }
+    }
+  });
+
+  finalConfirmation.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (validateCurrentStep()) {
+        currentStep++;
+        if (currentStep <= 5) {
+          showStep(currentStep);
+        }
+      }
+    }
+  });
+
   // Close modal when clicking outside
   bypassModal.addEventListener("click", (e) => {
     if (e.target === bypassModal) {
