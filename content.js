@@ -26,7 +26,7 @@ function handleNavigation(url) {
 
   // 📅 Check if we're within the allowed schedule - if so, skip blocking
   if (isWithinAllowedSchedule()) {
-    console.log("Within allowed schedule - blocking disabled");
+    console.log("Dans la plage horaire autorisée - blocage désactivé");
     return;
   }
 
@@ -38,7 +38,7 @@ function handleNavigation(url) {
 
       // Check if this URL is whitelisted (either as video ID or full URL)
       if (whitelist[url] && now < whitelist[url]) {
-        console.log("URL whitelisted - skipping block");
+        console.log("URL en liste blanche - blocage ignoré");
         return;
       }
 

@@ -66,7 +66,7 @@ function updateTimer(endTime, redirectUrl) {
   const seconds = Math.floor((diff % 60000) / 1000);
   document.getElementById(
     "timer"
-  ).textContent = `Come back in ${minutes}:${seconds
+  ).textContent = `Retour dans ${minutes}:${seconds
     .toString()
     .padStart(2, "0")}`;
 
