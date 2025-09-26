@@ -12,6 +12,7 @@ const CONFIG = {
   // 📅 Schedule settings - blocking is disabled during these time ranges
   SCHEDULE_ENABLED: true, // Enable/disable schedule feature
   ALLOWED_TIME_RANGES: [
+    { start: "05:45", end: "07:15" }, // Morning work
     { start: "12:00", end: "14:00" }, // Lunch break
     { start: "20:00", end: "22:00" }, // Evening relaxation
     // Add more ranges as needed
