@@ -129,7 +129,9 @@ function initBypassSystem() {
   // Event listeners
   bypassButton.addEventListener("click", () => {
     bypassModal.style.display = "block";
-    showStep(1);
+    // Start at the first enabled step (keep indicators constant)
+    currentStep = getFirstEnabledStep();
+    showStep(currentStep);
   });
 
   cancelBypass.addEventListener("click", () => {
@@ -138,7 +140,8 @@ function initBypassSystem() {
 
   nextStep.addEventListener("click", () => {
     if (validateCurrentStep()) {
-      currentStep++;
+      const next = getNextEnabledStep(currentStep);
+      currentStep = next;
       if (currentStep <= 5) {
         showStep(currentStep);
       }
@@ -166,7 +169,8 @@ function initBypassSystem() {
     if (e.key === "Enter" && e.ctrlKey) {
       e.preventDefault();
       if (validateCurrentStep()) {
-        currentStep++;
+        const next = getNextEnabledStep(currentStep);
+        currentStep = next;
         if (currentStep <= 5) {
           showStep(currentStep);
         }
@@ -178,7 +182,8 @@ function initBypassSystem() {
     if (e.key === "Enter") {
       e.preventDefault();
       if (validateCurrentStep()) {
-        currentStep++;
+        const next = getNextEnabledStep(currentStep);
+        currentStep = next;
         if (currentStep <= 5) {
           showStep(currentStep);
         }
@@ -190,7 +195,8 @@ function initBypassSystem() {
     if (e.key === "Enter") {
       e.preventDefault();
       if (validateCurrentStep()) {
-        currentStep++;
+        const next = getNextEnabledStep(currentStep);
+        currentStep = next;
         if (currentStep <= 5) {
           showStep(currentStep);
         }
@@ -220,18 +226,28 @@ function showStep(step) {
     }
 
     if (stepIndicator) {
-      stepIndicator.classList.remove("active", "completed");
+      stepIndicator.classList.remove("active", "completed", "disabled");
       if (i < step) {
         stepIndicator.classList.add("completed");
       } else if (i === step) {
         stepIndicator.classList.add("active");
       }
+      if (!isStepEnabled(i)) {
+        stepIndicator.classList.add("disabled");
+      }
     }
   }
 
-  // Show current step content
+  // Show current step content; if disabled, immediately jump to the next enabled step
   const currentStepContent = document.getElementById(`step${step}-content`);
-  if (currentStepContent) {
+  if (!isStepEnabled(step)) {
+    const next = getNextEnabledStep(step);
+    currentStep = next;
+    if (currentStep <= 5) {
+      showStep(currentStep);
+      return;
+    }
+  } else if (currentStepContent) {
     currentStepContent.style.display = "block";
   }
 
@@ -249,6 +265,46 @@ function showStep(step) {
   }
 
   updateNextButton();
+}
+
+/**
+ * Return whether a given step is enabled via config (steps 1-4). Step 5 is always enabled.
+ */
+function isStepEnabled(stepNumber) {
+  switch (stepNumber) {
+    case 1:
+      return CONFIG.BYPASS_ENABLE_STEP1_REFLECTION !== false;
+    case 2:
+      return CONFIG.BYPASS_ENABLE_STEP2_TIMER !== false;
+    case 3:
+      return CONFIG.BYPASS_ENABLE_STEP3_MATH !== false;
+    case 4:
+      return CONFIG.BYPASS_ENABLE_STEP4_CONFIRM !== false;
+    case 5:
+      return true;
+    default:
+      return true;
+  }
+}
+
+/**
+ * Get first enabled step to start from.
+ */
+function getFirstEnabledStep() {
+  for (let i = 1; i <= 5; i++) {
+    if (isStepEnabled(i)) return i;
+  }
+  return 5;
+}
+
+/**
+ * Get next enabled step after the given one. Caps at 5.
+ */
+function getNextEnabledStep(fromStep) {
+  for (let i = fromStep + 1; i <= 5; i++) {
+    if (isStepEnabled(i)) return i;
+  }
+  return 5;
 }
 
 /**
@@ -325,6 +381,7 @@ function startReflectionTimer() {
 function validateCurrentStep() {
   switch (currentStep) {
     case 1:
+      if (!isStepEnabled(1)) return true;
       const text = document.getElementById("reflectionText").value;
       const wordCount = text
         .trim()
@@ -334,13 +391,16 @@ function validateCurrentStep() {
       return wordCount >= minWords;
 
     case 2:
+      if (!isStepEnabled(2)) return true;
       return true; // Timer handles this
 
     case 3:
+      if (!isStepEnabled(3)) return true;
       const userAnswer = parseInt(document.getElementById("mathAnswer").value);
       return userAnswer === mathAnswer;
 
     case 4:
+      if (!isStepEnabled(4)) return true;
       const confirmation = document.getElementById("finalConfirmation").value;
       const requiredPhrase = CONFIG.BYPASS_CONFIRMATION_PHRASE || "JE SUIS SÛR";
       return confirmation === requiredPhrase;
